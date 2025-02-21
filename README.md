@@ -48,3 +48,24 @@ To run the FastAPI application, use the following command:
 ```sh
 python main.py
 ```
+
+or
+
+```sh
+API_KEY=1234 python main.py
+```
+
+## Example CURL Command
+
+You can use the following CURL command for testing:
+
+```bash
+   curl -X 'POST' \
+   'http://localhost:9001/query' \
+   -H 'accept: application/json' \
+   -H 'Content-Type: application/json' \
+   -H 'X-API-KEY: 1234' \
+   -d '{
+   "message": "Hello World"
+   }'
+```
