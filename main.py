@@ -1,6 +1,7 @@
 import logging
+import os
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
 
@@ -23,7 +24,16 @@ class RestAPIResponseBody(BaseModel):
 app = FastAPI()
 
 
-@app.post("/query", response_model=RestAPIResponseBody)
+def check_api_key(header: str = Header(..., alias="X-API-KEY")) -> None:
+    if "API_KEY" in os.environ and header != os.environ["API_KEY"]:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+
+@app.post(
+    "/query",
+    response_model=RestAPIResponseBody,
+    dependencies=[Depends(check_api_key)],
+)
 async def query(request: RestAPIRequestBody) -> RestAPIResponseBody:
     # TODO: remove logging user data in production
     logging.debug(request.message)  # raw user input
